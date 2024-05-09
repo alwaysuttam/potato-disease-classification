@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Upload Potato Leaf Image</h1>
+        <form id="upload-form" enctype="multipart/form-data" class="max-w-md mx-auto">
+            <div class="mb-4">
+                <label for="file" class="block text-gray-700 font-bold mb-2">Choose a file</label>
+                <input type="file" id="file" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <button type="submit" id="upload-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Upload</button>
+        </form>
+        <div id="image-container" class="hidden mt-8">
+            <h2 class="text-xl font-semibold mb-4">Uploaded Image:</h2>
+            <div class="max-w-md mx-auto border rounded-md overflow-hidden shadow-lg">
+                <img id="uploaded-image" src="#" alt="Uploaded Image" class="object-cover w-full h-auto">
+            </div>
+        </div>
+        <div id="prediction-result" class="hidden mt-8">
+            <h2 class="text-xl font-semibold mb-2">Prediction Result:</h2>
+            <p class="text-lg" id="predicted-class"></p>
+            <p class="text-lg" id="confidence"></p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#upload-form').submit(function(event) {
+                event.preventDefault(); // Prevent form submission
+                
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+                
+                // Make AJAX request to Flask server
+                $.ajax({
+                    url: '/predict',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Display uploaded image
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#uploaded-image').attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL($('#file')[0].files[0]);
+                        
+                        // Update DOM with prediction result
+                        $('#predicted-class').text('Predicted Class: ' + response.prediction);
+                        $('#confidence').text('Confidence: ' + response.confidence);
+                        $('#image-container').removeClass('hidden');
+                        $('#prediction-result').removeClass('hidden');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
