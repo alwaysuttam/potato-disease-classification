@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify,  render_template
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
-import os
 import io
 
 # Load the saved model
@@ -38,7 +37,7 @@ def predict():
     prediction = model.predict(img_array)
     
     # Get class label
-    class_names = ["EARLY", "HEALTHY", "LATE"]
+    class_names = ["EARLY_BLIGHT", "LATE_BLIGHT", "HEALTHY"]
     predicted_class = class_names[np.argmax(prediction)]
     confidence = np.max(prediction)
     
