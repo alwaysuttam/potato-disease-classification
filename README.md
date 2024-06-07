@@ -23,7 +23,8 @@ This web application uses a trained deep learning model to predict the condition
 
 1. Clone the Repository:
   
-   git clone https://github.com/yourusername/potato-leaf-prediction.git
+   git clone https://github.com/uttam-bn/potato-disease-classification.git
+   
    cd potato-leaf-prediction
 
 2. Install the Required Packages
